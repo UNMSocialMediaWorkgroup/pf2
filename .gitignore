@@ -1,0 +1,9 @@
+#Intellij stuff
+.idea/
+target/
+project/
+lib/
+
+#emacs stuff
+*~
+[#]*[#]
