@@ -23,7 +23,7 @@ case class Vector2(x: Double, y: Double) {
 
 object Vector2 {
   val empty: Vector2 = new Vector2(0, 0)
-  val gravity: Vector2 = new Vector2(0, 0.0001)
+  val gravity: Vector2 = new Vector2(0, 0.015)
   val unitX: Vector2 = new Vector2(1, 0)
   val unitY: Vector2 = new Vector2(0, 1)
 }

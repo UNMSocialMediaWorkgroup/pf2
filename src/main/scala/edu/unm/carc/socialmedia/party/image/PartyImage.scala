@@ -43,7 +43,14 @@ class PartyImage
   private def removeOldParticles(particles: ParArray[Particle]):
     ParArray[Particle] = {
     particles.filter(_.pos.x < ScalaFXDriver.WIDTH)
-             .filter(_.pos.y < ScalaFXDriver.HEIGHT)
+             .filter(a ⇒ a.pos.y < ScalaFXDriver.HEIGHT)
+
+    particles.map {
+      p ⇒ p.pos.y match {
+        case y if y > ScalaFXDriver.HEIGHT && p.gonnaBeRed ⇒ p.bounce()
+        case y ⇒ p
+      }
+    }
   }
 
   private def addMissingParticles(particles: ParArray[Particle]):
