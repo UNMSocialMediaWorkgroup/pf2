@@ -61,6 +61,7 @@ class PartyImage
         case 0 ⇒ particles
         case x ⇒ addMultipleParticles(x - 1,
           particles :+ Particle.newRandomParticle())
+        /* This should only be in the bouncing branch */
       }
 
     @tailrec
