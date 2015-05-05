@@ -57,6 +57,8 @@ case class Particle(pos: Vector2,
 }
 
 object Particle {
+  val MAX_AGE = 750
+
   def newRandomParticle(): Particle = {
     new Particle(
       pos = new Vector2(PartyImage.rand.nextInt(ScalaFXDriver.WIDTH), 0),

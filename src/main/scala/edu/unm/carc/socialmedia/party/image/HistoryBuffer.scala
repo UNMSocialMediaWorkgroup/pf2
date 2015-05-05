@@ -4,6 +4,7 @@ import edu.unm.carc.socialmedia.party.drivers.ScalaFXDriver
 import edu.unm.carc.socialmedia.party.physics.Particle
 
 import scala.collection.immutable.HashMap
+import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.mutable.ParArray
 
 /**
@@ -15,11 +16,12 @@ class HistoryBuffer(val buffer: ParArray[Int]) {
 
   def flip(particles: ParArray[Particle]): HistoryBuffer = {
     new HistoryBuffer({
-      val plocs: HashMap[(Int, Int), (Int, Boolean)] =
-        particles.foldLeft(HashMap[(Int, Int), (Int, Boolean)]()) {
-          (map: HashMap[(Int, Int), (Int, Boolean)], next: Particle) ⇒ {
+      val plocs: HashMap[(Int, Int), (Int, Boolean, Boolean)] =
+        particles.foldLeft(HashMap[(Int, Int), (Int, Boolean, Boolean)]()) {
+          (map: HashMap[(Int, Int), (Int, Boolean, Boolean)],
+           next: Particle) ⇒ {
             map + ((next.pos.x.toInt, next.pos.y.toInt) →
-                   (next.green, next.red))
+                   (next.green, next.red, next.gonnaBeRed))
           }
         }
 
@@ -30,7 +32,10 @@ class HistoryBuffer(val buffer: ParArray[Int]) {
           plocs.get((x, y)) match {
             case Some(a) ⇒ a._2 match {
               case true ⇒ 0xff0000 | (a._1 << 8)
-              case false ⇒ 255 | (a._1 << 8)
+              case false ⇒ 0xff | (a._1 << 8) | (a._3 match {
+                case true ⇒ 0xaf0000
+                case false ⇒ 0
+              })
             }
             case None ⇒
               val blue = (buffer(i) & 0xff) - FADE_AMT match {
