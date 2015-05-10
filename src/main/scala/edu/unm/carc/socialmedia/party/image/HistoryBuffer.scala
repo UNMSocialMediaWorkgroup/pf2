@@ -4,7 +4,6 @@ import edu.unm.carc.socialmedia.party.drivers.ScalaFXDriver
 import edu.unm.carc.socialmedia.party.physics.Particle
 
 import scala.collection.immutable.HashMap
-import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.mutable.ParArray
 
 /**
@@ -20,8 +19,38 @@ class HistoryBuffer(val buffer: ParArray[Int]) {
         particles.foldLeft(HashMap[(Int, Int), (Int, Boolean, Boolean)]()) {
           (map: HashMap[(Int, Int), (Int, Boolean, Boolean)],
            next: Particle) ⇒ {
-            map + ((next.pos.x.toInt, next.pos.y.toInt) →
-                   (next.green, next.red, next.gonnaBeRed))
+            val value = (next.green, next.red, next.gonnaBeRed)
+            map + ((next.pos.x.toInt, next.pos.y.toInt) → value) +
+              (PartyImage.rand.nextBoolean() match {
+              case true ⇒
+                (next.pos.x.toInt - 1, next.pos.y.toInt) → value
+              case false ⇒
+                (next.pos.x.toInt, next.pos.y.toInt) → value
+            }) +
+            (PartyImage.rand.nextBoolean() match {
+              case true ⇒
+                (next.pos.x.toInt + 1, next.pos.y.toInt) → value
+              case false ⇒
+                (next.pos.x.toInt, next.pos.y.toInt) → value
+            }) +
+            (PartyImage.rand.nextBoolean() match {
+              case true ⇒
+                (next.pos.x.toInt, next.pos.y.toInt - 1) → value
+              case false ⇒
+                (next.pos.x.toInt, next.pos.y.toInt) → value
+            }) +
+            (PartyImage.rand.nextBoolean() match {
+              case true ⇒
+                (next.pos.x.toInt, next.pos.y.toInt + 1) → value
+              case false ⇒
+                (next.pos.x.toInt, next.pos.y.toInt) → value
+            })
+            /*
+            ((next.pos.x.toInt - 1, next.pos.y.toInt) → value) +
+            ((next.pos.x.toInt + 1, next.pos.y.toInt) → value) +
+            ((next.pos.x.toInt, next.pos.y.toInt - 1) → value) +
+            ((next.pos.x.toInt, next.pos.y.toInt + 1) → value)
+            */
           }
         }
 
